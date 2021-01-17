@@ -38,6 +38,15 @@ class BezierSurface :
                 mat[i,j] = P[i][j][k]
         return mat
 
+    def getRowArray(self, P, i):
+        return np.array(P[i])
+    
+    def getColumnArray(self, P, i):
+        col = []
+        for row in P:
+            col.append(row[i])
+        return np.array(col)
+
     def Bernstein(self,n,i,t):
         return comb(n,i) * (1-t)**(n-i) * t**i
 
