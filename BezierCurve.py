@@ -111,9 +111,9 @@ class BezierCurve :
 
         #再帰を行う
         x0 = np.empty(0)
-        if x_max-x_min < 1e-6:
+        if x_max-x_min < 1e-12:
             x0 = np.append(x0, np.array([(x_max+x_min)/2]))
-        elif 1 - 1e-6 < t_max-t_min:
+        elif 0.99 < t_max-t_min:
             div_bezier1, div_bezier2 = self.divide((t_max+t_min)/2)
             x0 = np.append(x0, div_bezier1._zeroPoint())
             x0 = np.append(x0, div_bezier2._zeroPoint())
@@ -153,13 +153,13 @@ def main():
     ]
     
     bc = BezierCurve(P)
-    line = Line.Line2D(a=-1, b=0, c=0.5)
+    line = Line.Line2D(np.array([-0.5,-0.5]), np.array([1.5,0.5]))
     clip_xy = bc.Clip(line)
     print(clip_xy)
     for p in clip_xy:
         plt.scatter(p[0], p[1], c='r')
     bc.Plot()
-    line.Plot(x_min=0, x_max=3)
+    line.Plot()
     plt.show()
 
 if __name__ == "__main__":
