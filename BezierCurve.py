@@ -9,7 +9,7 @@ class BezierCurve :
     #Pは2次元制御点の行列
     def __init__(self,P):
         self._P = P   
-        self._order = P.shape[0] - 1
+        self._order = len(P) - 1
     
     @property
     def P(self):
@@ -18,6 +18,19 @@ class BezierCurve :
     @property
     def order(self):
         return self._order
+    
+    def getColumnArray(self, P, i):
+        col = []
+        for p in P:
+            col.append(p[i])
+        return np.array(col)
+    
+    def getMatrix(self, P):
+        mat = np.empty([0,2],float)
+        for p in P:
+            mat = np.append(mat, np.array([p]), axis=0)
+        return mat
+
 
     def Bernstein(self,n,i,t):
         return comb(n,i) * (1-t)**(n-i) * t**i
@@ -29,37 +42,39 @@ class BezierCurve :
         return Pt
     
     def Plot(self):
-        Pt = np.empty([0,2],float)
+        Pt = []
         for t in np.linspace(0.,1.,101):
-            Pt = np.append(Pt,np.array([self.Point(t)]),axis=0)
+            Pt.append(self.Point(t))
         
-        x = Pt[:,0]
-        y = Pt[:,1]
+        x = self.getColumnArray(Pt,0)
+        y = self.getColumnArray(Pt,1)
 
         plt.plot(x, y, c='b')
 
     def Clip(self, line):
-        di = (line.a*self.P[:,0] + line.b*self.P[:,1] + line.c)/np.sqrt(line.a**2 + line.b**2)
+        di = (line.a*self.getColumnArray(self.P,0) + line.b*self.getColumnArray(self.P,1) + line.c)/np.sqrt(line.a**2 + line.b**2)
         ni = np.linspace(0, 1, self.order+1)
-        Pi = np.array([ni, di]).T
-        
+        Pi = []
+        for (n, d) in zip(ni, di):
+            Pi.append(np.array([n,d]))
+
         td_curve = BezierCurve(Pi)
         td = td_curve._zeroPoint()
 
-        Pt = np.empty([0,2],float)
+        Pt = []
         for t in td:
-            Pt = np.append(Pt, np.array([self.Point(t)]), axis=0)
+            Pt.append(self.Point(t))
         return Pt
-    
+
     def _zeroPoint(self):
         #凸包とx軸との交点を求め、小さいほうからt_min, t_maxとするコード
         try:
-            hull = ConvexHull(self.P)
+            hull = ConvexHull(self.getMatrix(self.P))
         except scipy.spatial.qhull.QhullError:
-            x1 = self.P[0,0]
-            y1 = self.P[0,1]
-            x2 = self.P[-1,0]
-            y2 = self.P[-1,1]
+            x1 = self.P[0][0]
+            y1 = self.P[0][1]
+            x2 = self.P[-1][0]
+            y2 = self.P[-1][1]
             return (x1*y2 - x2*y1)/(y2 - y1)
         hull_points = hull.points[hull.vertices]
         hull_points = np.append(hull_points, np.array([hull_points[0]]), axis=0)
@@ -91,8 +106,8 @@ class BezierCurve :
             prev_hp = hp
         if x_max < x_min:
             x_max, x_min = x_min, x_max
-        t_max = (x_max-self.P[0,0])/(self.P[-1,0]-self.P[0,0])
-        t_min = (x_min-self.P[0,0])/(self.P[-1,0]-self.P[0,0])
+        t_max = (x_max-self.P[0][0])/(self.P[-1][0]-self.P[0][0])
+        t_min = (x_min-self.P[0][0])/(self.P[-1][0]-self.P[0][0])
 
         #再帰を行う
         x0 = np.empty(0)
@@ -109,43 +124,40 @@ class BezierCurve :
         return x0
 
     def divide(self, t):
-        Ps = np.append(self.P, self._de_casteljau_algorithm(self.P, t), axis=0)
-        P1 = np.empty([0,2])
-        P2 = np.empty([0,2])
-        index1 = 0
-        index2 = self.order
-        i = 0
-        while i <= self.order:
-            P1 = np.append(P1, np.array([Ps[index1,:]]), axis=0)
-            P2 = np.append(P2, np.array([Ps[index2,:]]), axis=0)
-            index1 += (self.order+1) - i
-            index2 += self.order - i
-            i += 1
-        return BezierCurve(P1), BezierCurve(np.flipud(P2))
+        Ps = [self.P] + self._de_casteljau_algorithm(self.P, t)
+        P1 = []
+        P2 = []
+        for lst in Ps:
+            P1.append(lst[0])
+            P2.append(lst[-1])
+        P2.reverse()
+        return BezierCurve(P1), BezierCurve(P2)
 
     def _de_casteljau_algorithm(self, P, t):
         prev_p = None
-        Q = np.empty([0,2])
+        Q = []
         for p in P:
             if not prev_p is None:
-                Q = np.append(Q, np.array([(1-t)*prev_p + t*p]), axis=0)
+                Q.append(np.array((1-t)*prev_p + t*p))
             prev_p = p
-        if Q.shape[0] == 1:
-            return Q
-        return np.append(Q, self._de_casteljau_algorithm(Q, t), axis=0)   
+        if len(Q) == 1:
+            return [Q]
+        return [Q] + self._de_casteljau_algorithm(Q, t)
     
 def main():
-    P = np.array([
-        [0.,-1],
-        [1.,2],
-        [1.,-2],
-        [0.,1]
-    ])
+    P = [
+        np.array([0.,-1]),
+        np.array([1.,2]),
+        np.array([1.,-2]),
+        np.array([0.,1])
+    ]
+    
     bc = BezierCurve(P)
-    line = Line.Line(a=-1, b=0, c=0.5)
+    line = Line.Line2D(a=-1, b=0, c=0.5)
     clip_xy = bc.Clip(line)
     print(clip_xy)
-    plt.scatter(clip_xy[:,0], clip_xy[:,1], c='r')
+    for p in clip_xy:
+        plt.scatter(p[0], p[1], c='r')
     bc.Plot()
     line.Plot(x_min=0, x_max=3)
     plt.show()
