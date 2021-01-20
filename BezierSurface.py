@@ -57,11 +57,11 @@ class BezierSurface :
                 Suv += self.Bernstein(self.norder,i,u) * self.Bernstein(self.morder,j,v) * self.P[i][j]
         return Suv
     
-    def Plot(self):
+    def Plot(self, ax):
         Suv = []
         for u in np.linspace(0.,1.,101):
             row = []
-            for v in np. linspace(0.,1.,101):
+            for v in np.linspace(0.,1.,101):
                 row.append(self.Point(u,v))
             Suv.append(row)
         
@@ -69,12 +69,19 @@ class BezierSurface :
         y = self.getMatrix(Suv, 1)
         z = self.getMatrix(Suv, 2)
 
-        fig = plt.figure()
-        ax = Axes3D(fig)
-
         ax.plot_wireframe(x, y, z, color='blue',linewidth=0.3)
-        plt.legend()
-        plt.show()
+
+    def Affine(self, mat):
+        newP = []
+        for row in self.P:
+            newRow = []
+            for p in row:
+                p = np.append(p, 1).T
+                p = np.dot(mat, p)[0:3]
+                newRow.append(p)
+            newP.append(newRow)
+        return BezierSurface(newP)
+        
 
 def main():
     
@@ -85,8 +92,14 @@ def main():
         [np.array([3.,0.,0.]), np.array([3.,1.,-1.]), np.array([3.,2.,0.]), np.array([3.,3.,0.])]
     ]
     
+    fig = plt.figure()
+    ax = Axes3D(fig)
+
     BS = BezierSurface(P)
-    BS.Plot()
+    BS.Plot(ax)
+
+    plt.legend()
+    plt.show()
 
 if __name__ == "__main__":
     main()
