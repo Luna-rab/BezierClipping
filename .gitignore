@@ -143,7 +143,6 @@ dmypy.json
 
 # End of https://www.toptal.com/developers/gitignore/api/python
 
-test.py
-test3D.py
+test*.py
 __pycache__
 .vscode
