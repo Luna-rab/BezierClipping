@@ -5,7 +5,7 @@ from mpl_toolkits.mplot3d import Axes3D
 
 class Plane:
     def __init__(self, d, P):
-        d = d/math.sqrt(np.sum(d)**2)
+        d = d/math.sqrt(np.sum(d**2))
         self._d = d 
         self._a = d[0]
         self._b = d[1]
@@ -33,9 +33,10 @@ class Plane:
         return self._e
 
     def dist2Point(self, P):
-        return np.dot(self.d, P) + self.e
+        d = np.dot(self.d, P) + self.e
+        return d
 
-    def Plot(self, ax, xrange=[-3,3], yrange=[-3,3]):
+    def Plot(self, ax, xrange=[0,3], yrange=[0,3]):
         if self.c != 0:
             x = np.arange(xrange[0], xrange[1], 0.1)
             y = np.arange(yrange[0], yrange[1], 0.1)
@@ -47,7 +48,7 @@ class Plane:
             xx, yy = np.meshgrid(x, y)
             zz = -(self.e + self.a*xx + self.b*yy) / self.c
         
-        ax.plot_wireframe(xx, yy, zz)
+        ax.plot_wireframe(xx, yy, zz, linewidths = 0.3)
 
 
         

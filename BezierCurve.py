@@ -41,7 +41,7 @@ class BezierCurve :
             Pt += self.Bernstein(self.order,i,t) * self.P[i]
         return Pt
     
-    def Plot(self):
+    def Plot(self, c='b'):
         Pt = []
         for t in np.linspace(0.,1.,101):
             Pt.append(self.Point(t))
@@ -49,7 +49,7 @@ class BezierCurve :
         x = self.getColumnArray(Pt,0)
         y = self.getColumnArray(Pt,1)
 
-        plt.plot(x, y, c='b')
+        plt.plot(x, y, c=c)
 
     def Clip(self, line):
         di = (line.a*self.getColumnArray(self.P,0) + line.b*self.getColumnArray(self.P,1) + line.c)/np.sqrt(line.a**2 + line.b**2)
@@ -146,20 +146,19 @@ class BezierCurve :
     
 def main():
     P = [
-        np.array([0.,-1]),
+        np.array([0.,0]),
         np.array([1.,2]),
-        np.array([1.,-2]),
-        np.array([0.,1])
+        np.array([2.,2]),
+        np.array([3.,1])
     ]
     
     bc = BezierCurve(P)
-    line = Line.Line2D(np.array([-0.5,-0.5]), np.array([1.5,0.5]))
-    clip_xy = bc.Clip(line)
-    print(clip_xy)
-    for p in clip_xy:
-        plt.scatter(p[0], p[1], c='r')
-    bc.Plot()
-    line.Plot()
+    div1,div2 = bc.divide(0.6)
+    div1.Plot(c='r')
+    div2.Plot(c='g')
+    plt.plot(bc.getColumnArray(bc.P,0),bc.getColumnArray(bc.P,1),c='b')
+    plt.plot(div1.getColumnArray(div1.P,0),div1.getColumnArray(div1.P,1),c='orange')
+    plt.plot(div2.getColumnArray(div2.P,0),div2.getColumnArray(div2.P,1),c='lightgreen')
     plt.show()
 
 if __name__ == "__main__":

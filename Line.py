@@ -37,7 +37,7 @@ class Line2D:
     def Point(self, x):
         return (-1*self.a*x-self.c)/self.b
 
-    def Plot(self, x_min=None, x_max=None):
+    def Plot(self, c='b', x_min=None, x_max=None):
         if x_min == None:
             x_min = min(self.start[0], self.end[0])
         if x_max == None:
@@ -46,7 +46,7 @@ class Line2D:
             x_min, x_max = x_max, x_min
         
         if self.b == 0:
-            plt.axvline(x=-1*(self.c/self.a), c='b')
+            plt.axvline(x=-1*(self.c/self.a), c=c)
         else :
             x = np.linspace(x_min,x_max,101)
             y = self.Point(x)
@@ -81,7 +81,7 @@ class Line3D:
         return math.sqrt(np.dot((P-P1), (P-P1)))
 
     def intersectionPlane(self):
-        h1 = np.cross(self.d, np.array([1+1e-6,0,0]))
+        h1 = np.cross(self.d, np.array([1+1e-3,1,1]))
         h1 = h1/math.sqrt(np.sum(h1)**2)
 
         h2 = np.cross(self.d, h1)
@@ -118,7 +118,7 @@ class Line3D:
             y.append(self.Point(t)[1])
             z.append(self.Point(t)[2])
 
-        ax.plot(x, y, z, color='red',linewidth=0.3)
+        ax.plot(x, y, z, color='red',linewidth=1)
 
 def main():
     line = Line3D(np.array([0.1,0.2,0.3]), np.array([1,1,1]))
