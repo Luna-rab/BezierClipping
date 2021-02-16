@@ -86,29 +86,3 @@ class BezierSurface :
     def Clip(self, line):
         return self.getBezierPatch(line).Clip()
 
-def main():
-    
-    P = [
-        [np.array([0.,0.,0.]), np.array([0.,1.,0.]), np.array([0.,2.,-1.]), np.array([0.,3.,0.])],
-        [np.array([1.,0.,1.]), np.array([1.,1.,0.]), np.array([1.,2.,0.]), np.array([1.,3.,0.])],
-        [np.array([2.,0.,0.]), np.array([2.,1.,0.]), np.array([2.,2.,0.]), np.array([2.,3.,1.])],
-        [np.array([3.,0.,0.]), np.array([3.,1.,-1.]), np.array([3.,2.,0.]), np.array([3.,3.,0.])]
-    ]
-    
-    fig = plt.figure()
-    ax = Axes3D(fig)
-
-    ax.set_xlabel('x')
-    ax.set_ylabel('y')
-    ax.set_zlabel('z')
-
-    BS = BezierSurface(P)
-    BS.Plot(ax)
-
-    ax.plot_wireframe(BS.getMatrix(BS.P,0), BS.getMatrix(BS.P,1), BS.getMatrix(BS.P,2), color='red',linewidth=1, linestyles='dashed')
-
-    plt.legend()
-    plt.show()
-
-if __name__ == "__main__":
-    main()

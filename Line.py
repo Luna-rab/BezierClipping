@@ -120,24 +120,3 @@ class Line3D:
 
         ax.plot(x, y, z, color='red',linewidth=1)
 
-def main():
-    line = Line3D(np.array([0.1,0.2,0.3]), np.array([1,1,1]))
-
-    fig = plt.figure()
-    ax = Axes3D(fig)
-
-    line.Plot(ax, -3,3,-3,3)
-    Pl1,Pl2 = line.intersectionPlane()
-    Pl1.Plot(ax)
-    Pl2.Plot(ax)
-
-    ax.set_xlabel('x')
-    ax.set_ylabel('y')
-    ax.set_zlabel('z')
-
-    plt.legend()
-    plt.show()
-
-if __name__ == "__main__":
-    main()
-    

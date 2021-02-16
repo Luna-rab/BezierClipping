@@ -272,23 +272,6 @@ class BezierPatch:
             return [Q]
         return [Q] + self._de_casteljau_algorithm(Q, t)
 
-def main():
 
-    P=[
-        [np.array([0.89442719, 0.99654576]), np.array([0.       , 1.2456822]), np.array([-0.4472136 ,  1.99309152]), np.array([-1.78885438,  1.74395508])], 
-        [np.array([ 0.4472136 , -0.33218192]), np.array([0.       , 0.4152274]), np.array([-0.89442719,  0.66436384]), np.array([-1.78885438,  0.91350028])], 
-        [np.array([ 0.89442719, -0.66436384]), np.array([ 0.       , -0.4152274]), np.array([-0.89442719, -0.16609096]), np.array([-2.23606798, -0.4152274 ])], 
-        [np.array([ 0.89442719, -1.49481864]), np.array([ 0.4472136 , -0.74740932]), np.array([-0.89442719, -0.99654576]), np.array([-1.78885438, -0.74740932])]
-    ]
-    bp = BezierPatch(P)
-    #bp.Plot()
-    plt.scatter(bp.getMatrix(P,0),bp.getMatrix(P,1))
-
-    plt.show()
-
-if __name__ == "__main__":
-    main()
-        
-    
 
 

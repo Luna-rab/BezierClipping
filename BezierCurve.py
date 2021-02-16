@@ -144,22 +144,3 @@ class BezierCurve :
             return [Q]
         return [Q] + self._de_casteljau_algorithm(Q, t)
     
-def main():
-    P = [
-        np.array([0.,0]),
-        np.array([1.,2]),
-        np.array([2.,2]),
-        np.array([3.,1])
-    ]
-    
-    bc = BezierCurve(P)
-    div1,div2 = bc.divide(0.6)
-    div1.Plot(c='r')
-    div2.Plot(c='g')
-    plt.plot(bc.getColumnArray(bc.P,0),bc.getColumnArray(bc.P,1),c='b')
-    plt.plot(div1.getColumnArray(div1.P,0),div1.getColumnArray(div1.P,1),c='orange')
-    plt.plot(div2.getColumnArray(div2.P,0),div2.getColumnArray(div2.P,1),c='lightgreen')
-    plt.show()
-
-if __name__ == "__main__":
-    main()
