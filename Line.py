@@ -107,8 +107,9 @@ class Line3D:
             t_max = max(self.start[2], self.end[2])/self.d[2]
             t_min = min(self.start[2], self.end[2])/self.d[2]
         else:
-            t_min = max((x_min - self.start[0])/self.d[0], (y_min - self.start[1])/self.d[1])
-            t_max = min((x_max - self.start[0])/self.d[0], (y_max - self.start[1])/self.d[1])
+            nums = [(x_min - self.start[0])/self.d[0], (y_min - self.start[1])/self.d[1], (x_max - self.start[0])/self.d[0], (y_max - self.start[1])/self.d[1]]
+            t_min = sorted(nums)[1]
+            t_max = sorted(nums)[2]
         
         x = []
         y = []

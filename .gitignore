@@ -146,3 +146,4 @@ dmypy.json
 test*.py
 __pycache__
 .vscode
+*.txt
